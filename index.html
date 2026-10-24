@@ -1,23 +1,37 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Educart - Digital Platform & Study Hub</title>
+    <title>Educart - High-Performance Digital Platform & Study Hub</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+        }
+    </script>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col justify-between">
+<body class="bg-slate-950 text-slate-100 dark:bg-slate-950 dark:text-slate-100 min-h-screen flex flex-col justify-between transition-colors duration-300">
 
     <!-- Header / Navigation -->
-    <header class="border-b border-slate-800 p-4 flex justify-between items-center max-w-6xl mx-auto w-full sticky top-0 bg-slate-950/80 backdrop-blur z-50">
+    <header class="border-b border-slate-800 p-4 flex justify-between items-center max-w-6xl mx-auto w-full sticky top-0 bg-slate-950/90 backdrop-blur z-50">
         <h1 class="text-xl font-bold tracking-wider text-cyan-400">EDUCART</h1>
-        <nav class="space-x-6 text-sm">
+        <nav class="hidden md:flex space-x-6 text-sm items-center">
             <a href="#" class="hover:text-cyan-400 transition">Home</a>
             <a href="#hub" class="hover:text-cyan-400 transition">Study Hub</a>
-            <a href="#features" class="hover:text-cyan-400 transition">Explore</a>
-            <a href="#newsletter" class="hover:text-cyan-400 transition">Contact</a>
+            <a href="#pomodoro" class="hover:text-cyan-400 transition">Focus Timer</a>
+            <a href="#quiz-section" class="hover:text-cyan-400 transition">Quiz</a>
         </nav>
+        <div class="flex items-center gap-3">
+            <!-- Feature 4: Theme Toggle Button -->
+            <button onclick="toggleTheme()" class="bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-lg text-xs hover:border-cyan-500 transition">
+                🌙 / ☀️
+            </button>
+            <span id="streak-badge" class="bg-cyan-950 text-cyan-400 border border-cyan-800 text-xs px-3 py-1.5 rounded-lg font-medium">
+                🔥 Streak: <span id="streak-count">0</span>
+            </span>
+        </div>
     </header>
 
     <!-- Main Content Container -->
@@ -30,133 +44,48 @@
                 Empowering <span class="text-cyan-400">Education & Growth</span>
             </h2>
             <p class="text-slate-400 text-base md:text-lg">
-                Your digital learning and content hub, built entirely in the cloud, ready to scale, inspire, and make an impact.
+                Your high-speed digital learning hub, engineered for zero lag, rapid study workflows, and maximum productivity.
             </p>
-            <div class="pt-4">
-                <a href="#hub" class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-semibold px-6 py-3 rounded-lg shadow-lg transition">
-                    Launch Study Hub
+            <div class="pt-4 flex justify-center gap-4">
+                <a href="#hub" class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-semibold px-6 py-3 rounded-lg shadow-lg transition text-sm">
+                    Explore Hub
+                </a>
+                <a href="#pomodoro" class="bg-slate-900 border border-slate-800 hover:border-cyan-500 text-slate-200 font-semibold px-6 py-3 rounded-lg transition text-sm">
+                    Start Timer
                 </a>
             </div>
         </div>
 
-        <!-- Interactive Study Hub Section -->
+        <!-- FEATURE 1 & 3: Interactive Study Hub with Instant Search & Bookmarking -->
         <section id="hub" class="w-full mb-16 pt-8 border-t border-slate-900">
             <div class="text-center mb-8">
                 <h3 class="text-2xl font-bold text-cyan-400">Interactive Study Hub</h3>
-                <p class="text-slate-400 text-sm mt-1">Select a subject category below to instantly access curated resources.</p>
+                <p class="text-slate-400 text-sm mt-1">Search instantly or filter categories for rapid note access.</p>
                 
+                <!-- Instant Search Input -->
+                <div class="max-w-md mx-auto mt-6">
+                    <input type="text" id="search-input" onkeyup="searchResources()" placeholder="🔍 Type to search notes instantly..." 
+                        class="w-full bg-slate-900 border border-slate-800 px-4 py-3 rounded-xl text-sm text-slate-100 focus:outline-none focus:border-cyan-500 transition">
+                </div>
+
                 <!-- Category Filter Buttons -->
-                <div class="flex flex-wrap justify-center gap-3 mt-6">
-                    <button onclick="filterResources('all')" class="filter-btn bg-cyan-500 text-slate-950 font-semibold px-4 py-2 rounded-lg text-xs transition">All Subjects</button>
+                <div class="flex flex-wrap justify-center gap-3 mt-4">
+                    <button onclick="filterResources('all')" class="filter-btn bg-cyan-500 text-slate-950 font-semibold px-4 py-2 rounded-lg text-xs transition">All</button>
                     <button onclick="filterResources('math')" class="filter-btn bg-slate-900 border border-slate-800 text-slate-300 hover:border-cyan-500 px-4 py-2 rounded-lg text-xs transition">Mathematics</button>
                     <button onclick="filterResources('physics')" class="filter-btn bg-slate-900 border border-slate-800 text-slate-300 hover:border-cyan-500 px-4 py-2 rounded-lg text-xs transition">Physics</button>
                     <button onclick="filterResources('cs')" class="filter-btn bg-slate-900 border border-slate-800 text-slate-300 hover:border-cyan-500 px-4 py-2 rounded-lg text-xs transition">Computer Science</button>
+                    <button onclick="filterResources('saved')" class="filter-btn bg-slate-900 border border-slate-800 text-yellow-400 hover:border-yellow-500 px-4 py-2 rounded-lg text-xs transition">⭐ Saved Notes</button>
                 </div>
             </div>
 
             <!-- Resource Cards Grid -->
             <div id="resource-grid" class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <!-- Card 1 -->
-                <div class="resource-card bg-slate-900/50 border border-slate-800 p-6 rounded-xl hover:border-cyan-500 transition" data-category="math">
-                    <span class="text-xs bg-cyan-950 text-cyan-400 px-2.5 py-1 rounded border border-cyan-900">Mathematics</span>
-                    <h4 class="font-bold text-lg mt-3 mb-2">Advanced Calculus & Algebra</h4>
+                <div class="resource-card bg-slate-900/50 border border-slate-800 p-6 rounded-xl hover:border-cyan-500 transition relative" data-category="math" data-title="Advanced Calculus & Algebra">
+                    <div class="flex justify-between items-start mb-2">
+                        <span class="text-xs bg-cyan-950 text-cyan-400 px-2.5 py-1 rounded border border-cyan-900">Mathematics</span>
+                        <button onclick="toggleBookmark(this, 'Advanced Calculus & Algebra')" class="text-slate-500 hover:text-yellow-400 text-lg transition">⭐</button>
+                    </div>
+                    <h4 class="font-bold text-lg mt-2 mb-2">Advanced Calculus & Algebra</h4>
                     <p class="text-slate-400 text-sm mb-4">Master complex equations, functions, and problem-solving techniques with structured guides.</p>
-                    <a href="#" class="text-cyan-400 text-xs font-semibold hover:underline">Access Notes &rarr;</a>
-                </div>
-                <!-- Card 2 -->
-                <div class="resource-card bg-slate-900/50 border border-slate-800 p-6 rounded-xl hover:border-cyan-500 transition" data-category="physics">
-                    <span class="text-xs bg-indigo-950 text-indigo-400 px-2.5 py-1 rounded border border-indigo-900">Physics</span>
-                    <h4 class="font-bold text-lg mt-3 mb-2">Mechanics & Dynamics</h4>
-                    <p class="text-slate-400 text-sm mb-4">Explore laws of motion, gravitation, energy conservation, and fundamental formulas.</p>
-                    <a href="#" class="text-cyan-400 text-xs font-semibold hover:underline">Access Notes &rarr;</a>
-                </div>
-                <!-- Card 3 -->
-                <div class="resource-card bg-slate-900/50 border border-slate-800 p-6 rounded-xl hover:border-cyan-500 transition" data-category="cs">
-                    <span class="text-xs bg-emerald-950 text-emerald-400 px-2.5 py-1 rounded border border-emerald-900">Computer Science</span>
-                    <h4 class="font-bold text-lg mt-3 mb-2">Informatics & Web Logic</h4>
-                    <p class="text-slate-400 text-sm mb-4">Learn programming fundamentals, data structures, database queries, and web architecture.</p>
-                    <a href="#" class="text-cyan-400 text-xs font-semibold hover:underline">Access Notes &rarr;</a>
-                </div>
-            </div>
-        </section>
-
-        <!-- Features Grid Section -->
-        <div id="features" class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full pt-8 border-t border-slate-900 mb-16">
-            <div class="bg-slate-900/50 border border-slate-800 p-6 rounded-xl">
-                <div class="text-cyan-400 font-bold text-lg mb-2">01. Smart Learning</div>
-                <p class="text-slate-400 text-sm">Access curated study guides, interactive notes, and resources designed for modern learners.</p>
-            </div>
-            <div class="bg-slate-900/50 border border-slate-800 p-6 rounded-xl">
-                <div class="text-cyan-400 font-bold text-lg mb-2">02. Digital Tools</div>
-                <p class="text-slate-400 text-sm">Utilize built-in web utilities and automated workflows to accelerate your daily productivity.</p>
-            </div>
-            <div class="bg-slate-900/50 border border-slate-800 p-6 rounded-xl">
-                <div class="text-cyan-400 font-bold text-lg mb-2">03. Community Hub</div>
-                <p class="text-slate-400 text-sm">Connect, share ideas, and scale collaborative projects with a wider audience effortlessly.</p>
-            </div>
-        </div>
-
-        <!-- Interactive Newsletter Section -->
-        <section id="newsletter" class="max-w-xl mx-auto text-center bg-slate-900/40 border border-slate-800 p-8 rounded-2xl w-full">
-            <h3 class="text-2xl font-bold mb-2 text-cyan-400">Stay Updated</h3>
-            <p class="text-slate-400 mb-6 text-sm">Join our mailing list to receive new educational tools and platform updates directly.</p>
-            
-            <form id="newsletter-form" class="flex flex-col sm:flex-row gap-3 justify-center">
-                <input type="email" id="user-email" placeholder="Enter your email address" required 
-                    class="bg-slate-950 border border-slate-800 px-4 py-2.5 rounded-lg text-slate-100 focus:outline-none focus:border-cyan-500 flex-grow text-sm">
-                <button type="submit" class="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-semibold px-5 py-2.5 rounded-lg text-sm transition">
-                    Subscribe
-                </button>
-            </form>
-            <p id="success-message" class="text-emerald-400 text-xs mt-3 hidden font-medium">✨ Thank you! You have successfully subscribed.</p>
-        </section>
-
-    </main>
-
-    <!-- Footer -->
-    <footer class="border-t border-slate-800 p-4 text-center text-xs text-slate-500">
-        &copy; 2026 Educart. All rights reserved.
-    </footer>
-
-    <!-- JavaScript for Interactivity and Filtering -->
-    <script>
-        // Newsletter Form Handler
-        const form = document.getElementById('newsletter-form');
-        const successMessage = document.getElementById('success-message');
-
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            const emailInput = document.getElementById('user-email').value;
-            if (emailInput.trim() !== "") {
-                successMessage.classList.remove('hidden');
-                form.reset();
-                setTimeout(() => { successMessage.classList.add('hidden'); }, 5000);
-            }
-        });
-
-        // Resource Filter Handler
-        function filterResources(category) {
-            const cards = document.querySelectorAll('.resource-card');
-            const buttons = document.querySelectorAll('.filter-btn');
-
-            // Update active button styling
-            buttons.forEach(btn => {
-                btn.classList.remove('bg-cyan-500', 'text-slate-950', 'font-semibold');
-                btn.classList.add('bg-slate-900', 'border', 'border-slate-800', 'text-slate-300');
-            });
-            event.target.classList.remove('bg-slate-900', 'border', 'border-slate-800', 'text-slate-300');
-            event.target.classList.add('bg-cyan-500', 'text-slate-950', 'font-semibold');
-
-            // Filter cards
-            cards.forEach(card => {
-                if (category === 'all' || card.getAttribute('data-category') === category) {
-                    card.style.display = 'block';
-                } else {
-                    card.style.display = 'none';
-                }
-            });
-        }
-    </script>
-
-</body>
-</html>
+                    <a href="#" class="text-cyan-400 text-xs font-semibold hover:underline">Access Notes &
